@@ -6,12 +6,12 @@ public class GFG
 #if TEST        
 	static string[]	inputs = new string[]
 		{ 
-            "2",
-            "5 2",
-            "12 5 787 1 23",
-            "7 3",
-            "1 23 12 9",    // continues to next line (tests multi-line input case on huge data)
-            "30 2 50"
+            "   2",
+            "5   2",
+            "12    5 787 1 23",
+            "7 3 ",
+            " 1 23 12 9",    // continues to next line (tests multi-line input case on huge data)
+            "   30 2 50"
 		};
     static int lineIndex = 0;
 #endif
@@ -42,11 +42,10 @@ public class GFG
 #else        
             var inputLine = Console.ReadLine();
 #endif
-            System.Console.WriteLine($"IN: '{inputLine}'");
-            var intSplit = inputLine.Split(' ')
-                .Select(x => int.Parse(x));
+            var intSplit = inputLine.Split(new char[]{' ', '\t'}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => int.Parse(x.Trim()));
             readCount += intSplit.Count();
-            readData.Concat(intSplit)
+            readData = readData.Concat(intSplit)
                 .ToArray();
         } while(readCount < expectedCount);
         return readData;
