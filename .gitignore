@@ -1,0 +1,32 @@
+# directories
+backup/
+.*/
+original/
+precompiled/
+obj/
+bin/
+build/
+builds/
+build_*/
+generated/
+
+# files
+*~
+*.bak
+*.backup
+.keep
+.keep*
+*.tar
+*.tar.bz
+*.tar.bz2
+*.gz
+*.html
+*.example
+*.sample
+*.gif
+*.jpg
+*.png
+*.lock
+*.pid
+*.cache
+*.pb.cc

@@ -1,4 +1,3 @@
-{
 #include<bits/stdc++.h>
 using namespace std;
 /* Link list node */
@@ -51,8 +50,7 @@ void printList(Node *node)
         printf("%d ", node->data);
         node = node->next;
     }
-    printf("
-");
+    printf("");
 }
 void deleteNode(Node *node_ptr);
 /* Drier program to test above function*/
@@ -76,8 +74,6 @@ int main(void)
     return(0);
 }
 
-}
-
 /*Please note that it's Function problem i.e.
 you need to write your solution in the form of Function(s) only.
 Driver Code to call/invoke your function is mentioned above.*/
@@ -92,5 +88,5 @@ struct Node
 // may assume that node exists in linked list and is not last node
 void deleteNode(Node *node)
 {
-   // Your code here
+   *node = *(node->next);
 }
