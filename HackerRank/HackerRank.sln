@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Array2DDS", "Array2DDS\Arra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftRotation", "LeftRotation\LeftRotation.csproj", "{DBF1DC31-6557-45F6-B1F8-B60579338715}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewYearChaos", "NewYearChaos\NewYearChaos.csproj", "{581AB3B1-AD4C-4F71-91A9-31DECC74860A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{DBF1DC31-6557-45F6-B1F8-B60579338715}.Release|x64.Build.0 = Release|Any CPU
 		{DBF1DC31-6557-45F6-B1F8-B60579338715}.Release|x86.ActiveCfg = Release|Any CPU
 		{DBF1DC31-6557-45F6-B1F8-B60579338715}.Release|x86.Build.0 = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|x64.Build.0 = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Debug|x86.Build.0 = Debug|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|x64.ActiveCfg = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|x64.Build.0 = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|x86.ActiveCfg = Release|Any CPU
+		{581AB3B1-AD4C-4F71-91A9-31DECC74860A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
