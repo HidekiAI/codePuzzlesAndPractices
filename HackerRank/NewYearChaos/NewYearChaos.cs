@@ -180,14 +180,21 @@ class Solution {
 //Console.WriteLine($"# IndexList: {string.Join(", ", headTailIndex.Select(t => t.Item1+":"+t.Item2))}");
             // fork and join
             chaos = false;
+            object chaosMutex = new object();
             System.Threading.Tasks.Parallel.ForEach(headTailIndex, (index) =>
             {
                 var headIndex = index.Item1;
                 var tailIndexIndex = index.Item2;
                 var tested = testParts(ref q, ref bribeCounts, headIndex, tailIndexIndex);
-                if(tested == false)
+                if (tested == false)
                 {
-                    Console.WriteLine("Too chaotic");
+                    lock(chaosMutex)    // mainly so we don't print it more than once
+                    {
+                        if (!chaos)
+                        {
+                            Console.WriteLine("Too chaotic");
+                        }
+                    }
                     chaos = true;
                     return;
                 }
