@@ -1,5 +1,6 @@
 # directories
 backup/
+.vscode/
 .*/
 original/
 precompiled/
@@ -30,3 +31,6 @@ generated/
 *.pid
 *.cache
 *.pb.cc
+
+.fakea.out
+a.out
