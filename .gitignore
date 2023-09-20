@@ -32,7 +32,6 @@ generated/
 *.cache
 *.pb.cc
 
-.fakea.out
+.fake
 a.out
 
-.fake
