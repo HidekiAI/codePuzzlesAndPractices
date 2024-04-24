@@ -10,6 +10,7 @@ build/
 builds/
 build_*/
 generated/
+target/
 
 # files
 *~
