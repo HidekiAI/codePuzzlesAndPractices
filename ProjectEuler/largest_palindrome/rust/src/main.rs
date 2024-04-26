@@ -1,5 +1,5 @@
 // A palindromic number reads the same both ways.
-// The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.$
+// The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
 // Find the largest palindrome made from the product of two 3-digit numbers.
 
 // White board:
@@ -24,41 +24,70 @@
 // 2 digits (i.e. 9009 verus 98789, both are palindromic numbers, but the former
 // is the product of two 2-digit numbers, while the latter is the product of two 3-digit numbers).
 // So for now, I'd assume as long as it's palindromic, it's good.
+// Wrong assmptions: I think the assumptions are that the palindrome is has 3 unique digits, but
+// the equations (X * Y) can be of any number of digits (i.e. 8 * 99 (1 digit * 2 digits)) as
+// long as the product produces unique 3 digits.
 
-const MAX_DIGITS: u32 = 3;
-const MAX_NUM: u64 = 999;   // for 3 digits, this is the max number
+//const MAX_DIGITS: usize = 3;
+//const MAX_NUM: u64 = 999;   // for 3 digits, this is the max number
+//const MIN_NUM: u64 = 100;   // for optimations, we'll only loop between MIN and MAX, and at the same time, because A * B = B * A, we can reduce the loop by half
+const MAX_DIGITS: usize = 3;
+const MAX_NUM: u64 = 999;
+const MIN_NUM: u64 = 100;
 
+// NOTE: Because unlike traditional C/C++ std::string, Rust's String is UTF-8 encoded,
+// which makes it so capacity is 4bytes per char (32-bits), as compared to
+// C/C++ char (8-bits) and wchar (16-bits), I am a bit concerned about how
+// this reversed string will equate when in STRING format, hence we'll need to
+// take extra step and convert the string BACK to u64 to compare and compare
+// the NUMBER instead of string...
 fn is_palindrome(num: u64) -> bool {
     let num_str = num.to_string();
     let num_rev: String = num_str.chars().rev().collect();
-    num_str == num_rev
+    if num_str == num_rev {
+        return true;
+    }
+    // due to concerns, we'll convert the reversed string back to u64 and compare
+    //println!("num: {}, num_str: {}, num_rev: {}", num, num_str, num_rev);
+    let num_rev: u64 = num_rev.parse().unwrap();
+    num == num_rev
 }
 
-fn is_N_digit(num: u64, digits: u32) -> bool {
+// We'll use SET to store unique digits, and then compare the length of the set
+// alternatively, we could also do HashMap where key is the digit and
+// value is irrelavant, and just count how many keys are in the map
+// NOTE: HashMap in Rust replaces existing key with new value (as compared to C# will throw)
+fn is_N_digit(num: u64, digits: usize) -> bool {
     let num_str = num.to_string();
     let mut num_set: std::collections::HashSet<char> = std::collections::HashSet::new();
+    // NOTE: String.chars() iterates through UTF-8 encoded sequence of chars, which is 4bytes (32-bits) per char
     for c in num_str.chars() {
         num_set.insert(c);
     }
+    //println!("num: {}, num_str: '{}', num_set: {:?}", num, num_str, num_set);
     num_set.len() == digits
 }
 
 fn main() {
-    let mut max_palindrome: u64 = 0;
     let mut x: u64 = MAX_NUM;
     let mut y: u64 = MAX_NUM;
-    while x > 0 {
-        while y > 0 {
+    let mut largest_product: u64 = 0;
+    while x >= MIN_NUM {
+        while y >= MIN_NUM {
             let z = x * y;
             // opt out early on FIRST encounter of palindromic number, for it SHOULD be the largest since we're iterating in decending order
-            if is_palindrome(z) && is_N_digit(x, MAX_DIGITS) && is_N_digit(y, MAX_DIGITS) {
-                max_palindrome = z;
-                println!("Largest palindrome: {} = {} x {}", max_palindrome, x, y);
-                return;
+            // optimization is also based on the && operator, in which we can either first test for N
+            // digits or whether the product is palindrome, in which case, I believe testing first
+            // for palindrome is more efficient, as it is a single operation, while N digits
+            //if is_palindrome(z) && is_N_digit(x, MAX_DIGITS) && is_N_digit(y, MAX_DIGITS) {
+            if z > largest_product && is_palindrome(z) && is_N_digit(z, MAX_DIGITS)  {
+                largest_product = z;
+                println!("Largest palindrome so far: {z} = {x} x {y}");
             }
             y -= 1;
         }
         x -= 1;
-        y = MAX_NUM;
+        y = MAX_NUM;    // reset
     }
+    println!("Largest palindrome: {largest_product}");
 }

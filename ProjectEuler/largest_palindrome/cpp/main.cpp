@@ -1,5 +1,5 @@
 // A palindromic number reads the same both ways.
-// The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.$
+// The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
 // Find the largest palindrome made from the product of two 3-digit numbers.
 
 // White board:
@@ -24,44 +24,60 @@
 // 2 digits (i.e. 9009 verus 98789, both are palindromic numbers, but the former
 // is the product of two 2-digit numbers, while the latter is the product of two 3-digit numbers).
 // So for now, I'd assume as long as it's palindromic, it's good.
+// Wrong assmptions: I think the assumptions are that the palindrome is has 3 unique digits, but
+// the equations (X * Y) can be of any number of digits (i.e. 8 * 99 (1 digit * 2 digits)) as
+// long as the product produces unique 3 digits.
 
 #include <iostream> // cout
 #include <string>   // to_string
 
 const unsigned int MAX_DIGITS = 3;
-const long long MAX_NUM = 999;  // for 3 digits, it's 999
+const long long MAX_NUM = 999; // for 3 digits, it's 999
 
-bool is_palindrome(const long long num) {
+bool is_palindrome(const long long num)
+{
     std::string str = std::to_string(num);
-    for (size_t i = 0; i < str.size() / 2; ++i) {
-        if (str[i] != str[str.size() - 1 - i]) {
+    for (size_t i = 0; i < str.size() / 2; ++i)
+    {
+        if (str[i] != str[str.size() - 1 - i])
+        {
             return false;
         }
     }
     return true;
 }
 
-bool is_N_digits(const long long num, const unsigned int digits) {
+bool is_N_digits(const long long num, const unsigned int digits)
+{
     std::string str = std::to_string(num);
     std::string unique_digits;
-    for (size_t i = 0; i < str.size(); ++i) {
-        if (unique_digits.find(str[i]) == std::string::npos) {
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        if (unique_digits.find(str[i]) == std::string::npos)
+        {
             unique_digits.push_back(str[i]);
         }
     }
     return unique_digits.size() == digits;
 }
 
-int main() {
+int main()
+{
     long long largest_palindrome = 0;
-    for (long long i = MAX_NUM; i > 0; --i) {
-        for (long long j = MAX_NUM; j > 0; --j) {
+    for (long long i = MAX_NUM; i > 0; --i)
+    {
+        for (long long j = MAX_NUM; j > 0; --j)
+        {
             long long product = i * j;
-            if (product < largest_palindrome) {
-                break;
+            if (product < largest_palindrome)
+            {
+                break;  // should it continue instead of break?
             }
-            if (is_palindrome(product) && is_N_digits(product, MAX_DIGITS)) {
+            // found product to be bigger than current largest, so record it
+            if (is_palindrome(product) && is_N_digits(product, MAX_DIGITS))
+            {
                 largest_palindrome = product;
+                std::cout << "Current match: " << largest_palindrome << " = " << i << " * " << j << std::endl;
             }
         }
     }
