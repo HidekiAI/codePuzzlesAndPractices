@@ -36,4 +36,5 @@ target/
 .fake
 a.out
 *.out
+tags
 
