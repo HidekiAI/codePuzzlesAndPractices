@@ -31,6 +31,13 @@
 // Unlike C++, in Rust I can return an Option<u64> to indicate that the (row, col) is not valid for the direction
 // at the edges/corners of the grid.
 
+// Postmortem:
+// * It dawned on me that I do not need to do "left" and "up" directions, since they 
+//   are the same as "right" and "down".  When I start at (0, 0) to inspect "right",
+//   when I get to (3, 0), I should not have to look at left...  same as for "up".
+// * Similarly, for diagonals, if I start at (0, 0) to inspect "down-right", when I 
+//   get to (3, 3), I should not have to look at "up-left".
+
 const ADJACENT_COUNT: usize = 4;    // for the grid, max product for 4 adjacent numbers is 70600674
 const GRID_FILENAME: &str = "../grid_20_20.txt";    // note: in Rust std::fs, the folks were nice enough to be agnostic of windows/linux paths
 
