@@ -39,7 +39,7 @@
 // will be the total number of paths.
 
 use core::fmt::{self, Formatter};
-use std::collections::HashMap;
+use std::{collections::HashMap, mem};
 
 const GRID_SIZE: usize = 20;
 
@@ -133,7 +133,7 @@ impl Nodes {
         );
         self.grid_size = dimension;
         let mut nodes_mapped: HashMap<NodeKey, Node> = HashMap::new();
-        Self::make_nodes(0, 0, &dimension, &mut nodes_mapped);
+        Self::make_nodes_rec(0, 0, &dimension, &mut nodes_mapped);
 
         // truthfully, we only care about the values but by keeping track of key via (row,col)
         // we can even lookup even quicker if we need to find a specific node
@@ -148,13 +148,23 @@ impl Nodes {
         //}
     }
 
-    // recursively build a tree of nodes
-    fn make_nodes(
+    // NOTE: it turns out for a 20x20, though it's quite small, I run out of memory
+    // on Debian, so if this fails on Windows, I will have to switch over to iteration
+    fn make_nodes_rec(
         row: usize,        // 0-based
         col: usize,        // 0-based
         dimension: &usize, // Square (NxN), i.e. 2x2 is 2, and range is inclusive (i.e. 0..=2)
         nodes: &mut HashMap<NodeKey, Node>,
     ) -> Option<Box<Node>> {
+        // free memory check, dump how many bytes we have used, and how much is available
+        let mem = sys_info::mem_info().unwrap();
+        println!(
+            "################# Nodes: count = {} - total memory = {}, ree memory = {}",
+            nodes.len(),
+            mem.total,
+            mem.free
+        );
+
         if dimension < &2 {
             panic!("Invalid dimension: {}", dimension);
         }
@@ -165,6 +175,9 @@ impl Nodes {
                 row, col, dimension
             );
         }
+        // note that we should be able to opt-out early if we've already visited the node
+        // in which both children are already created.  Unsure if this is really optimzation
+        // so for now, it is not considered
 
         // Firstly, for a 2x2 grid, there are 9 nodes; which basically means that it is ({0..=2} , {0..=2}) (3x3)
         let max_vert_count = dimension + 1;
@@ -198,8 +211,8 @@ impl Nodes {
             // origin
             (0, 0) => {
                 // must be parent node, it has both left and right child
-                left_child = Self::make_nodes(row + 1, col, &dimension, nodes);
-                right_child = Self::make_nodes(row, col + 1, &dimension, nodes);
+                left_child = Self::make_nodes_rec(row + 1, col, &dimension, nodes);
+                right_child = Self::make_nodes_rec(row, col + 1, &dimension, nodes);
                 ()
             }
             // bottom-right corner, disallow both left and right branches
@@ -213,21 +226,21 @@ impl Nodes {
             (r, _) if r == *dimension => {
                 // must be the bottom row, it has no left child
                 left_child = None;
-                right_child = Self::make_nodes(row, col + 1, &dimension, nodes);
+                right_child = Self::make_nodes_rec(row, col + 1, &dimension, nodes);
                 ()
             }
             // right column, disallow right branches
             (_, c) if c == *dimension => {
                 // must be the right column, it has no right child
-                left_child = Self::make_nodes(row + 1, col, &dimension, nodes);
+                left_child = Self::make_nodes_rec(row + 1, col, &dimension, nodes);
                 right_child = None;
                 ()
             }
             _ => {
                 // NOTE: Top row and left columns are treated SAME like normal nodes
                 // all other nodes have both left and right child
-                left_child = Self::make_nodes(row + 1, col, &dimension, nodes);
-                right_child = Self::make_nodes(row, col + 1, &dimension, nodes);
+                left_child = Self::make_nodes_rec(row + 1, col, &dimension, nodes);
+                right_child = Self::make_nodes_rec(row, col + 1, &dimension, nodes);
                 ()
             }
         } // match
@@ -266,9 +279,20 @@ impl Nodes {
 } // Nodes
 
 fn main() {
+    let app_timer = std::time::Instant::now();
+    let start_timer = std::time::Instant::now();
     let mut nodes = Nodes::new();
     nodes.init(GRID_SIZE);
+    println!("Initialization took: {:?}", start_timer.elapsed());
+    println!("Nodes: count={}", nodes.nodes.len());
+
+    let start_timer = std::time::Instant::now();
     let total_paths = nodes.visit_children();
+    println!(
+        "Processing took: {:?} (Total: {:?})",
+        start_timer.elapsed(),
+        app_timer.elapsed()
+    );
     println!("Total paths: {}", total_paths);
 }
 
