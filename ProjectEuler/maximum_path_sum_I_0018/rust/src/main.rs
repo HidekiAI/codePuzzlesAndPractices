@@ -43,31 +43,33 @@
 // than the currently known largest path.  So we have NO CHOICE but to visit all
 // children of each node until we reach the bottom.
 
-const MyTriangle: [[u32; 15]; 15] = [
-    [75],
-    [95, 64],
-    [17, 47, 82],
-    [18, 35, 87, 10],
-    [20, 4, 82, 47, 65],
-    [19, 1, 23, 75, 3, 34],
-    [88, 2, 77, 73, 7, 63, 67],
-    [99, 65, 4, 28, 6, 16, 70, 92],
-    [41, 41, 26, 56, 83, 40, 80, 70, 33],
-    [41, 48, 72, 33, 47, 32, 37, 16, 94, 29],
-    [53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14],
-    [70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57],
-    [91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48],
-    [63, 66, 4, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31],
-    [04, 62, 98, 27, 23, 9, 70, 98, 73, 93, 38, 53, 60, 4, 23],
-];
+fn make_triangle() -> Vec<Vec<u32>> {
+    vec![
+        vec![75],
+        vec![95, 64],
+        vec![17, 47, 82],
+        vec![18, 35, 87, 10],
+        vec![20, 4, 82, 47, 65],
+        vec![19, 1, 23, 75, 3, 34],
+        vec![88, 2, 77, 73, 7, 63, 67],
+        vec![99, 65, 4, 28, 6, 16, 70, 92],
+        vec![41, 41, 26, 56, 83, 40, 80, 70, 33],
+        vec![41, 48, 72, 33, 47, 32, 37, 16, 94, 29],
+        vec![53, 71, 44, 65, 25, 43, 91, 52, 97, 51, 14],
+        vec![70, 11, 33, 28, 77, 73, 17, 78, 39, 68, 17, 57],
+        vec![91, 71, 52, 38, 17, 14, 91, 43, 58, 50, 27, 29, 48],
+        vec![63, 66, 4, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31],
+        vec![04, 62, 98, 27, 23, 9, 70, 98, 73, 93, 38, 53, 60, 4, 23],
+    ]
+}
 
 // Unlike the C++ version, we won't create a tree structure.  We'll
 // just test for each vertex based on coordinates and determine its
 // left and right children dynamically.
 fn max_path_sum(
-    &triangle: [[u32; 15]; 15],
-    position: (usize /*row*/, usize /*col*/),
-    &current_sum: u32,
+    triangle: &Vec<Vec<u32>>,
+    position: &(usize /*row*/, usize /*col*/),
+    current_sum: &u32,
 ) -> u32 /*new_sum*/ {
     let max = |a: u32, b: u32| if a > b { a } else { b };
     let vert_value = triangle[position.0][position.1];
@@ -79,9 +81,9 @@ fn max_path_sum(
     }
 
     // special case, if at (0, 0), we don't check the edges and just assume it's got 2 children
-    if position == (0, 0) {
-        let new_left_child_sum = max_path_sum(triangle, (1, 0), current_sum + vert_value);
-        let new_right_child_sum = max_path_sum(triangle, (1, 1), current_sum + vert_value);
+    if position == &(0, 0) {
+        let new_left_child_sum = max_path_sum(triangle, &(1, 0), &(current_sum + vert_value));
+        let new_right_child_sum = max_path_sum(triangle, &(1, 1), &(current_sum + vert_value));
         // return the larger of the two children
         return max(new_left_child_sum, new_right_child_sum);
     }
@@ -90,29 +92,29 @@ fn max_path_sum(
     if position.1 == 0 {
         return max_path_sum(
             triangle,
-            (position.0 + 1, position.1),   // right child
-            current_sum + vert_value,
+            &(position.0 + 1, position.1), // right child
+            &(current_sum + vert_value),
         );
     }
     // right most edge (when col==row), only has 1 (left) child
     if position.1 == triangle[position.0].len() - 1 {
         return max_path_sum(
             triangle,
-            (position.0 + 1, position.1 - 1),   // left child
-            current_sum + vert_value,
+            &(position.0 + 1, position.1 - 1), // left child
+            &(current_sum + vert_value),
         );
     }
 
     // we have 2 children
     let left_child = max_path_sum(
         triangle,
-        (position.0 + 1, position.1),   // left child
-        current_sum + vert_value,
+        &(position.0 + 1, position.1), // left child
+        &(current_sum + vert_value),
     );
     let right_child = max_path_sum(
         triangle,
-        (position.0 + 1, position.1 + 1),   // right child
-        current_sum + vert_value,
+        &(position.0 + 1, position.1 + 1), // right child
+        &(current_sum + vert_value),
     );
     // return the larger of the two children plus the current sum
     return max(left_child, right_child);
@@ -120,11 +122,7 @@ fn max_path_sum(
 
 fn main() {
     let mut max_sum = 0;
-    for i in 0..MyTriangle[0].len() {
-        let sum = max_path_sum(MyTriangle, (0, i), 0);
-        if sum > max_sum {
-            max_sum = sum;
-        }
-    }
+    let sum = max_path_sum(&make_triangle(), &(0, 0), &0);
     println!("The maximum path sum is: {}", max_sum);
+    assert_eq!(sum, 1074);
 }
