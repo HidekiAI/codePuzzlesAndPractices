@@ -48,7 +48,7 @@
 // With final answer now corrected, performance comparison is as follows:
 // Rust unoptimized: 5.371384ms
 // Rust optimized: 197.107µs
-// C++ unoptimized: 206µs (not going to even bother with optimized version, hands down, C++ wins even via string based)
+// C++ unoptimized: 531µs (not going to even bother with optimized version, hands down, C++ wins even via string based)
 
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -57,8 +57,8 @@ use std::path::Path;
 const NUM_DIGITS: usize = 50;
 const NUM_LINES: usize = 100;
 const DATA_FILE: &str = "../data.txt"; // Expected answer for this data should be 5537376230 (first 10 digits)
-// Processing carry-over took: 1.729µs (Total so far: 171.576µs)
-// Final sum (52 digits): 5537376230390876637302048746832985971773659831892672
+                                       // Processing carry-over took: 1.729µs (Total so far: 171.576µs)
+                                       // Final sum (52 digits): 5537376230390876637302048746832985971773659831892672
 
 fn read_data(filename: &str) -> io::Result<Vec<String>> {
     let mut data = Vec::with_capacity(NUM_LINES);
@@ -199,7 +199,7 @@ fn large_sum(data_transformed: &Vec<Vec<u8>>) -> Vec<u8> {
         sum.insert(0, digit);
 
         // shift carry to the right
-        carry = new_carry ;
+        carry = new_carry;
     }
     println!(
         "\nProcessing carry-over took: {:?} (Total so far: {:?})",

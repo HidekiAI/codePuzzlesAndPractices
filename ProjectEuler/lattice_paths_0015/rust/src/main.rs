@@ -526,7 +526,7 @@ impl Nodes {
     // returns 0 if neither children can reach goal, otherwise 1 if either or 2 if both children can reach goal
     // DFS based recursive function to visit each node and its children until it reaches the goal,
     // and sum up which children can reach the goal (both children means 2)
-    fn can_children_reach_goal_rec(&self, nodekey: &NodeKey) -> u64 {
+    fn visit_children_rec(&self, nodekey: &NodeKey) -> u64 {
         let node = self.get(nodekey).unwrap();
         if node.left_child.is_none() && node.right_child.is_none() {
             //println!("*");
@@ -536,7 +536,7 @@ impl Nodes {
         // RIGHT: right child
         let reached_goal_right = if let Some(right_child) = node.right_child.clone() {
             //print!("r");
-            self.can_children_reach_goal_rec(&right_child.node_key)
+            self.visit_children_rec(&right_child.node_key)
         } else {
             0
         };
@@ -544,7 +544,7 @@ impl Nodes {
         // Down: left child
         let reached_goal_left = if let Some(left_child) = node.left_child.clone() {
             //print!("d");
-            self.can_children_reach_goal_rec(&left_child.node_key)
+            self.visit_children_rec(&left_child.node_key)
         } else {
             0
         };
@@ -556,7 +556,32 @@ impl Nodes {
         // there's only ONE start and ONE end, so we can just call the root node
         // and recursively visit its children
         let current_node = self.get_root();
-        self.can_children_reach_goal_rec(&current_node.clone().node_key)
+        self.visit_children_rec(&current_node.clone().node_key)
+    }
+
+    // iterative version of visit_children() - to avoid stack overflow
+    fn visit_children_iter(&self) -> u64 {
+        let mut total_paths: u64 = 0;
+        let mut node_stack: Vec<NodeKey> = Vec::new();
+        node_stack.push(NodeKey { row: 0, col: 0 });
+
+        while !node_stack.is_empty() {
+            let nodekey = node_stack.pop().unwrap();
+            let node = self.get(&nodekey).unwrap();
+            if node.left_child.is_none() && node.right_child.is_none() {
+                total_paths += 1;
+                continue;
+            }
+
+            if let Some(right_child) = node.right_child.clone() {
+                node_stack.push(right_child.node_key);
+            }
+            if let Some(left_child) = node.left_child.clone() {
+                node_stack.push(left_child.node_key);
+            }
+        }
+        total_paths // return total paths   
+
     }
 
     // DFS: O(V + E)
@@ -599,7 +624,7 @@ fn main() {
     println!("Nodes: count={}", nodes.nodes.len());
 
     let start_timer = std::time::Instant::now();
-    let total_paths = nodes.visit_children();
+    let total_paths = nodes.visit_children_iter();
     println!(
         "Processing took: {:?} (Total: {:?})",
         start_timer.elapsed(),
@@ -662,6 +687,7 @@ mod tests {
 
     #[test]
     fn test_visit_children_3x3() {
+        let start_timer = std::time::Instant::now();
         let grid_size = 3;
         let mut nodes = Nodes::new();
         nodes.init(grid_size);
@@ -670,6 +696,27 @@ mod tests {
         // dump each routes
         nodes.debug_dump_paths();
 
+        // Processing took: 923.499µs for 16 nodes
+        println!("Processing took: {:?} for {} nodes", start_timer.elapsed(), nodes.nodes.len());
+
         assert_eq!(total_paths, 20);
     }
+
+    #[test]
+    fn test_visit_children_3x3_iter() {
+        let start_timer = std::time::Instant::now();
+        let grid_size = 3;
+        let mut nodes = Nodes::new();
+        nodes.init(grid_size);
+        let total_paths = nodes.visit_children_iter();
+
+        // dump each routes
+        nodes.debug_dump_paths();
+
+        // Processing took: 218.784µs for 16 nodes
+        println!("Processing took: {:?} for {} nodes", start_timer.elapsed(), nodes.nodes.len());
+
+        assert_eq!(total_paths, 20);
+    }
+
 }
