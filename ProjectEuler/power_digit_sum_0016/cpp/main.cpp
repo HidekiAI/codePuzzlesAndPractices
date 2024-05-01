@@ -50,17 +50,20 @@
 // longer to type).
 //     1024 = 2^10
 //          = 2^9 * 2^1 = 512 * 2
-//          = 2^8 * 2^2 = 256 * 4
-//          = 2^7 * 2^3 = 128 * 8
-//          = 2^6 * 2^4 = 64 * 16
 //          = 2^5 * 2^5 = 32 * 32
 //    16384 = 2^14 * 2^0
-//          = 2^10 * 2^4 = 1024 * 16
-//          = 2^7 * 2^7 = 128 * 128
-//    2^128 = 2^64 * 2^64 = 18446744073709551616 * 18446744073709551616
-//     2^64 = 2^32 * 2^32 = 4294967296 * 4294967296
-//     2^32 = 2^16 * 2^16 = 65536 * 65536
-//     2^16 = 2^8 * 2^8 = 256 * 256 = 
+//    2^100 = 2^50 * 2^50 = 1125899906842624 * 1125899906842624
+//    2^500 = 2^250 * 2^250
+//          = 2^100 * 2^100 * 2^100 * 2^100 * 2^100
+//   2^1000 = 2^500 * 2^500
+//          = 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100
+// Though we now have a formula to break down 2^1000 into value that fits into
+// 64-bits, it's multiplcation (not addition for large sum).  For example, 2^100 * 2^100
+// means adding 2^100 2^100 times which is not practical (in fact, almost impossible).
+// We need a balance, for example, 100 lines of 50 digits was managable in problem #13.
+// First, let's figure out what will give us clost to 300 digits.
+// Again, once we have that magic number of 2^x, we can juggle the values until
+// we get 2^1000.
 
 
 
