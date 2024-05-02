@@ -105,6 +105,10 @@ std::vector<std::uint8_t> add_large_numbers(std::vector<std::uint8_t> &a,
   // from left to right, add each column
   for (auto col = 0; col < max_width; ++col) {
     // DO NOT assume that values on l and r are of same width!
+    // NOTE that this was the bug that I had spent about 40 minutes to find...
+    // if this was Rust, it would have caught it either during static analysis or runtime
+    // because Rust does not allow you to access an array element that is out of bounds
+    // this is why I want to quit using C++!
     auto l = col < left_rev.size() ? left_rev[col] : 0;
     auto r = col < right_rev.size() ? right_rev[col] : 0;
     uint16_t column_sum = l + r + carry;
