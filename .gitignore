@@ -38,3 +38,5 @@ a.out
 *.out
 tags
 
+*.exe
+
