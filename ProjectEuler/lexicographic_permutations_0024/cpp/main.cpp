@@ -87,3 +87,22 @@ int main() {
   std::cout << "Elapsed time: " << diff.count() << "s" << std::endl;
   return 0;
 }
+
+// NOTE: Using Lehmer code (https://en.wikipedia.org/wiki/Lehmer_code) to
+// generate permutations seems to be this trivial:
+//
+// void main() {
+//     int digits[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     int fact[10] = {1};
+//
+//     for(int i = 1; i < 10; ++i) fact[i] = i * fact[i-1];
+//     for(int i = 9, j = 999999; i >= 0; j %= fact[i--]) {
+//         int *next = digits;
+//         for(int k = j / fact[i]; k; ++next) k -= *next != -1;
+//         while(*next == -1) ++next;
+//         putchar(*next + '0');
+//         *next = -1;
+//     }
+//
+//     putchar('\n');
+// }
