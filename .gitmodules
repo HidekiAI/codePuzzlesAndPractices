@@ -1,0 +1,3 @@
+[submodule "hairev_utils"]
+	path = hairev_utils
+	url = git@github.com:HidekiAI/hairev_utils.git

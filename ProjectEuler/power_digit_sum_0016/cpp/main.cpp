@@ -56,16 +56,22 @@
 //    2^500 = 2^250 * 2^250
 //          = 2^100 * 2^100 * 2^100 * 2^100 * 2^100
 //   2^1000 = 2^500 * 2^500
-//          = 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100
+//          = 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 * 2^100 *
+//          2^100 * 2^100
 // Though we now have a formula to break down 2^1000 into value that fits into
-// 64-bits, it's multiplcation (not addition for large sum).  For example, 2^100 * 2^100
-// means adding 2^100 2^100 times which is not practical (in fact, almost impossible).
-// We need a balance, for example, 100 lines of 50 digits was managable in problem #13.
-// First, let's figure out what will give us clost to 300 digits.
-// Again, once we have that magic number of 2^x, we can juggle the values until
-// we get 2^1000.
+// 64-bits, it's multiplcation (not addition for large sum).  For example, 2^100
+// * 2^100 means adding 2^100 2^100 times which is not practical (in fact,
+// almost impossible). We need a balance, for example, 100 lines of 50 digits
+// was managable in problem #13. First, let's figure out what will give us clost
+// to 300 digits. Again, once we have that magic number of 2^x, we can juggle
+// the values until we get 2^1000.
 
-
+// brute force:
+// 2^n = 2 * 2 * 2 * ... * 2 (n times)
+// so I'll just use Large_Numbers library, and multiply 1000 times.
+//  for i in 1..1000 { result = result * 2; }
+// and then just add the digits in result
+#define _HAS_CXX20 1
 
 #include <algorithm> // std::reverse
 #include <cassert>   // assert
@@ -73,6 +79,9 @@
 #include <iostream>  // std::cout
 #include <string>    // std::string
 #include <vector>    // std::vector
+#include "../../../hairev_utils/large_numbers/cpp/src/lib_large_numbers.hpp"
+
+using namespace hairev::libs;
 
 const long POWER = 1000;
 
@@ -129,4 +138,29 @@ sum_columns(const std::vector<std::string> &lines_reversed,
 
   // finally, we'll reverse the sum vector
   return reverse_64(sum_reversed);
+}
+
+// entry point
+int main() {
+  auto start = std::chrono::high_resolution_clock::now();
+
+  // for now, just brute force the result
+  Large_Numbers my_large_number = Large_Numbers("1");
+  for (long i = 1; i < POWER; ++i) {
+    my_large_number = my_large_number * Large_Numbers("2");
+  }
+
+  std::cout << "2^" << POWER << " = ";
+  my_large_number.Dump();
+  std::cout << " (" << my_large_number.Size() << " digits)" << std::endl;
+  std::cout << "Sum of the digits: ";
+  std::uint64_t sum = 0;
+  for (const auto &digit : my_large_number.Get()) {
+    sum += digit - '0'; // Convert the digit to integer
+  }
+  std::cout << sum << std::endl;
+
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> diff = end - start;
+  std::cout << "Duration: " << diff.count() << " s" << std::endl;
 }

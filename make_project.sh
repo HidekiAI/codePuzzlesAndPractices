@@ -23,7 +23,7 @@ touch cpp/main.cpp
 echo '
 // My essentials that I always include:
 #define _HAS_CXX20 1
-#if _HAS_CXX20
+#if _HAS_CXX20  // NOTE: Though I just need C++17 so I can use std::optional and lamdas, I believe Hackerrank allows UP TO uses C++20
 #include <algorithm> // std::sort, std::transform, std::find (std::find - make sure to override operator==)
 #include <array>
 #include <cassert>    // assert()
@@ -34,6 +34,7 @@ echo '
 #include <iostream>   // std::cout
 #include <memory>     // std::shared_ptr, std::make_shared
 #include <optional>   // a bit different from Rust Option<T> but still, useful!
+#include <stack>  // commonly used when I need to convert recursive to iterative
 #include <string>
 #include <tuple>
 #include <unordered_map> // use map if need keys to be ordered, but generally, I just need key to be hashed...
